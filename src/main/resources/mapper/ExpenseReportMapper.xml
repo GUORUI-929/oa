@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.buu.oa.mapper.ExpenseReportMapper">
+
+    <!--
+        新增报销单主记录
+        业务逻辑：写入报销单基础信息，状态默认为待审批
+    -->
+    <insert id="insertExpenseReport" parameterType="com.buu.oa.entity.ExpenseReport" useGeneratedKeys="true" keyProperty="entity.id">
+        INSERT INTO expense_report (report_no, emp_id, total_amount, expense_type, invoice_url, description, status)
+        VALUES (#{entity.reportNo}, #{entity.empId}, #{entity.totalAmount}, #{entity.expenseType}, #{entity.invoiceUrl}, #{entity.description}, #{entity.status})
+    </insert>
+
+</mapper>

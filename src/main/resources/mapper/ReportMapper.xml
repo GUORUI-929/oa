@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.buu.oa.mapper.ReportMapper">
+
+    <!--
+        查询各部门在职人数分布
+        业务逻辑：关联部门表与员工表，统计各部门在职及试用期员工人数，按人数降序排列
+    -->
+    <select id="selectDeptPersonCount" resultType="java.util.Map">
+        SELECT d.dept_name AS deptName, COUNT(e.id) AS personCount
+        FROM sys_dept d
+                 LEFT JOIN emp_employee e ON d.id = e.dept_id AND e.status != 3
+        GROUP BY d.id, d.dept_name
+        ORDER BY personCount DESC
+    </select>
+
+    <!--
+        查询近N个月报销金额趋势
+        业务逻辑：按月份分组统计报销总金额，排除已驳回单据，取最近N个月的数据
+        优化：IFNULL处理空值；CDATA包裹特殊字符避免XML解析错误
+    -->
+    <select id="selectExpenseTrend" resultType="java.util.Map">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m') AS reportMonth,
+            IFNULL(SUM(total_amount), 0) AS totalAmount
+        FROM expense_report
+        WHERE status != 'REJECTED'
+          AND create_time <![CDATA[>=]]> DATE_SUB(CURDATE(), INTERVAL ${months} MONTH)
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+        ORDER BY reportMonth ASC
+    </select>
+
+    <!--
+        查询指定年月报销金额Top5员工
+        业务逻辑：关联员工表与部门表，按员工分组统计本月报销总金额与次数，取前5名
+        优化：日期范围查询性能更优；CDATA包裹特殊字符；LPAD补全月份避免日期错误
+    -->
+    <select id="selectMonthlyExpenseTop5" resultType="java.util.Map">
+        SELECT
+            e.name,
+            d.dept_name AS deptName,
+            COUNT(r.id) AS reportCount,
+            IFNULL(SUM(r.total_amount), 0) AS totalAmount
+        FROM expense_report r
+                 LEFT JOIN emp_employee e ON r.emp_id = e.id
+                 LEFT JOIN sys_dept d ON e.dept_id = d.id
+        WHERE r.create_time <![CDATA[>=]]> CONCAT(#{year}, '-', LPAD(#{month}, 2, '0'), '-01 00:00:00')
+          AND r.create_time <![CDATA[<]]> DATE_ADD(CONCAT(#{year}, '-', LPAD(#{month}, 2, '0'), '-01'), INTERVAL 1 MONTH)
+        GROUP BY r.emp_id, e.name, d.dept_name
+        ORDER BY totalAmount DESC
+            LIMIT 5
+    </select>
+
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.buu.oa.mapper.MeetingRoomMapper">
+
+    <!--
+        查询可用会议室列表
+        业务逻辑：查询状态为启用的会议室，按容量升序排序
+    -->
+    <select id="selectAvailableRoomList" resultType="com.buu.oa.entity.MeetingRoom">
+        SELECT id, room_name, room_code, capacity, location, status
+        FROM meeting_room
+        WHERE status = 1
+        ORDER BY capacity ASC
+    </select>
+
+    <!--
+        根据ID查询会议室详情
+        业务逻辑：根据主键查询单条会议室信息
+    -->
+    <select id="selectRoomById" resultType="com.buu.oa.entity.MeetingRoom">
+        SELECT id, room_name, room_code, capacity, location, status
+        FROM meeting_room
+        WHERE id = #{id}
+    </select>
+
+</mapper>

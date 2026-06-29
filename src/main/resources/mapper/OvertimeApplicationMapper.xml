@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.buu.oa.mapper.OvertimeApplicationMapper">
+
+    <!--
+        新增加班申请单
+        业务逻辑：写入加班单基础信息，状态默认为待审批
+    -->
+    <insert id="insertOvertimeApplication" parameterType="com.buu.oa.entity.OvertimeApplication" useGeneratedKeys="true" keyProperty="entity.id">
+        INSERT INTO overtime_application (overtime_no, emp_id, overtime_type, start_time, end_time, hours, reason, status)
+        VALUES (#{entity.overtimeNo}, #{entity.empId}, #{entity.overtimeType}, #{entity.startTime}, #{entity.endTime}, #{entity.hours}, #{entity.reason}, #{entity.status})
+    </insert>
+
+</mapper>

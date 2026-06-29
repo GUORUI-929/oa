@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 这里namespace必须和你的Mapper接口完全一致 -->
+<mapper namespace="com.buu.oa.mapper.AttendanceCheckinMapper">
+
+    <!-- 按月查询全部打卡记录 对应接口 selectMonthlyAttendance -->
+    <select id="selectMonthlyAttendance" resultType="com.buu.oa.entity.AttendanceCheckin">
+        SELECT id, emp_id, check_date, check_in_time, check_out_time, status
+        FROM attendance_checkin
+        WHERE emp_id = #{empId}
+            AND YEAR(check_date) = #{year}
+          AND MONTH(check_date) = #{month}
+        ORDER BY check_date ASC
+    </select>
+
+    <!-- 月度统计 对应接口 selectMonthlyStatistics -->
+    <select id="selectMonthlyStatistics" resultType="java.util.Map">
+        SELECT
+            SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) normalCount,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) lateCount,
+            SUM(CASE WHEN status = 3 THEN 1 ELSE 0 END) missCount,
+            SUM(CASE WHEN status = 4 THEN 1 ELSE 0 END) leaveCount
+        FROM attendance_checkin
+        WHERE emp_id = #{empId}
+            AND YEAR(check_date) = #{year}
+          AND MONTH(check_date) = #{month}
+    </select>
+
+</mapper>

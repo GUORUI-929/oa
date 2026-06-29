@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考勤日历</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 0;
+        }
+        .page-container {
+            width: 100%;
+        }
+        /* 页面标题 */
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #303133;
+        }
+        /* 通用卡片样式 */
+        .card {
+            background: #fff;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ebeef5;
+        }
+        /* 状态图例 */
+        .legend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .legend-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #303133;
+        }
+        .legend-list {
+            display: flex;
+            gap: 20px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #606266;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border: 1px solid #dcdfe6;
+            border-radius: 2px;
+        }
+        .color-normal { background-color: #f0f9eb; border-color: #e1f3d8; }
+        .color-late { background-color: #fdf6ec; border-color: #faecd8; }
+        .color-absent { background-color: #fef0f0; border-color: #fde2e2; }
+        .color-leave { background-color: #ecf5ff; border-color: #d9ecff; }
+
+        /* 日历网格 */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .calendar-item {
+            background: #fafafa;
+            border-radius: 4px;
+            padding: 16px 10px;
+            text-align: center;
+            min-height: 72px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            border: 1px solid #f0f0f0;
+        }
+        .calendar-date {
+            font-size: 14px;
+            color: #303133;
+            font-weight: 500;
+        }
+        .calendar-status {
+            font-size: 12px;
+        }
+        .status-normal { color: #67c23a; }
+        .status-late { color: #e6a23c; }
+        .status-absent { color: #f56c6c; }
+        .status-leave { color: #409eff; }
+        .calendar-empty {
+            background: transparent;
+            border: none;
+        }
+
+        /* 统计卡片 */
+        .statistics-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #303133;
+        }
+        .statistics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid #ebeef5;
+            background: #fff;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .icon-normal { background-color: #f0f9eb; color: #67c23a; }
+        .icon-late { background-color: #fdf6ec; color: #e6a23c; }
+        .icon-absent { background-color: #fef0f0; color: #f56c6c; }
+        .icon-leave { background-color: #ecf5ff; color: #409eff; }
+        .stat-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .stat-number {
+            font-size: 28px;
+            font-weight: 600;
+            color: #303133;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #909399;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="page-container">
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <el-icon><Calendar /></el-icon>
+            <span>考勤日历（{{ year }}年{{ month }}月）</span>
+        </div>
+
+        <!-- 打卡状态标记卡片 -->
+        <div class="card">
+            <div class="legend-header">
+                <div class="legend-title">打卡状态标记</div>
+                <div class="legend-list">
+                    <div class="legend-item">
+                        <span class="legend-color color-normal"></span>
+                        <span>正常</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color color-late"></span>
+                        <span>迟到</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color color-absent"></span>
+                        <span>缺卡</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color color-leave"></span>
+                        <span>请假</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 日历网格 -->
+            <div class="calendar-grid">
+                <div v-for="(day, index) in calendarDays" :key="index"
+                     class="calendar-item"
+                     :class="{ 'calendar-empty': !day.day }">
+                    <div class="calendar-date">{{ day.day }}</div>
+                    <div class="calendar-status" :class="getStatusClass(day.status)">
+                        {{ getStatusText(day.status) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 本月考勤统计卡片 -->
+        <div class="card">
+            <div class="statistics-title">本月考勤统计</div>
+            <div class="statistics-grid">
+                <div class="stat-item">
+                    <div class="stat-icon icon-normal">
+                        <el-icon><Calendar /></el-icon>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ statistics.normalDays }}</div>
+                        <div class="stat-label">出勤天数</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon icon-late">
+                        <el-icon><AlarmClock /></el-icon>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ statistics.lateCount }}</div>
+                        <div class="stat-label">迟到次数</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon icon-absent">
+                        <el-icon><Close /></el-icon>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ statistics.absentCount }}</div>
+                        <div class="stat-label">缺卡次数</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon icon-leave">
+                        <el-icon><Document /></el-icon>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ statistics.leaveDays }}</div>
+                        <div class="stat-label">请假天数</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/element-plus"></script>
+<script src="https://unpkg.com/@element-plus/icons-vue"></script>
+
+<script>
+    const { createApp, ref, onMounted, computed } = Vue;
+
+    const app = createApp({
+        setup() {
+            const year = ref(2026);
+            const month = ref(5);
+            const attendanceList = ref([]);
+            const statistics = ref({
+                normalDays: 0,
+                lateCount: 0,
+                absentCount: 0,
+                leaveDays: 0
+            });
+
+            // 状态文本与样式映射
+            const statusMap = {
+                1: { text: '正常', class: 'status-normal' },
+                2: { text: '迟到', class: 'status-late' },
+                3: { text: '缺卡', class: 'status-absent' },
+                4: { text: '请假', class: 'status-leave' }
+            };
+
+            // 生成当月日历网格（包含月初空白占位）
+            const calendarDays = computed(() => {
+                const days = [];
+                const firstDay = new Date(year.value, month.value - 1, 1);
+                const daysInMonth = new Date(year.value, month.value, 0).getDate();
+                const firstDayWeek = firstDay.getDay(); // 0为周日
+
+                // 月初空白占位
+                for (let i = 0; i < firstDayWeek; i++) {
+                    days.push({ day: '', status: null });
+                }
+
+                // 当月日期匹配考勤状态
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dateStr = `${year.value}-${String(month.value).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                    const record = attendanceList.value.find(item => item.checkDate === dateStr);
+                    days.push({
+                        day: i,
+                        date: dateStr,
+                        status: record ? record.status : null
+                    });
+                }
+                return days;
+            });
+
+            // 获取状态文本
+            const getStatusText = (status) => {
+                if (!status) return '';
+                return statusMap[status]?.text || '';
+            };
+
+            // 获取状态样式类
+            const getStatusClass = (status) => {
+                if (!status) return '';
+                return statusMap[status]?.class || '';
+            };
+
+            // 调用后端接口加载考勤数据
+            const loadAttendanceData = async () => {
+                try {
+                    const response = await fetch(`/api/attendance/monthly?year=${year.value}&month=${month.value}`);
+                    const res = await response.json();
+                    if (res.code === 200) {
+                        attendanceList.value = res.data.list;
+                        statistics.value = res.data.statistics;
+                    } else {
+                        ElementPlus.ElMessage.error(res.msg || '加载考勤数据失败');
+                    }
+                } catch (e) {
+                    ElementPlus.ElMessage.error('网络错误，加载考勤数据失败');
+                    console.error('考勤数据加载异常:', e);
+                }
+            };
+
+            onMounted(() => {
+                loadAttendanceData();
+            });
+
+            return {
+                year,
+                month,
+                calendarDays,
+                statistics,
+                getStatusText,
+                getStatusClass
+            };
+        }
+    });
+
+    app.use(ElementPlus);
+    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+        app.component(key, component);
+    }
+    app.mount('#app');
+</script>
+</body>
+</html>
