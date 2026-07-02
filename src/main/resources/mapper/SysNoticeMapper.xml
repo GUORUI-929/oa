@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.buu.oa.mapper.SysNoticeMapper">
+
+    <select id="selectPublishedNoticeList" resultType="com.buu.oa.entity.SysNotice">
+        SELECT id, title, content, publisher_id, type, status, create_time, update_time
+        FROM sys_notice
+        WHERE status = 1
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="countPublishedNotice" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM sys_notice WHERE status = 1
+    </select>
+
+    <insert id="insertNotice" parameterType="com.buu.oa.entity.SysNotice" useGeneratedKeys="true" keyProperty="entity.id">
+        INSERT INTO sys_notice (title, content, publisher_id, type, status)
+        VALUES (#{entity.title}, #{entity.content}, #{entity.publisherId}, #{entity.type}, #{entity.status})
+    </insert>
+
+</mapper>

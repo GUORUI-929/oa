@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OA协同办公平台</title>
-    <!-- 替换为国内稳定CDN，解决境外资源无法访问问题 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <!-- WangEditor 富文本编辑器 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/@wangeditor/editor@5/dist/css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@wangeditor/editor@5/dist/index.min.js"></script>
+    <!-- ECharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
     <style>
+        /* ========== 全局基础样式 ========== */
         * {
             margin: 0;
             padding: 0;
@@ -14,17 +18,17 @@
         }
         body {
             font-family: "Microsoft YaHei", Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
+            background: #f0f2f5;
+            color: #303133;
+            font-size: 14px;
         }
-        /* 顶部导航 */
+        /* 顶部导航栏 */
         .header {
             height: 60px;
-            background-color: #001529;
+            background: #001529;
             color: #fff;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             padding: 0 24px;
             position: fixed;
             top: 0;
@@ -33,25 +37,22 @@
             z-index: 100;
         }
         .logo {
-            font-size: 22px;
-            font-weight: bold;
+            font-size: 18px;
+            font-weight: 600;
+            margin-right: 40px;
         }
         .user-info {
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-        .user-role {
-            background-color: #1890ff;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 14px;
+            margin-left: auto;
         }
         .user-avatar {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background-color: #87d068;
+            background: #1890ff;
+            color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -59,184 +60,184 @@
         }
         /* 侧边栏 */
         .sidebar {
-            width: 200px;
-            background-color: #001529;
+            width: 220px;
+            background: #fff;
             position: fixed;
             top: 60px;
             left: 0;
             bottom: 0;
-            padding-top: 20px;
+            border-right: 1px solid #e8e8e8;
             overflow-y: auto;
+            padding: 16px 0;
         }
         .menu-group-title {
-            color: rgba(255,255,255,0.6);
-            font-size: 13px;
-            padding: 10px 24px;
+            padding: 8px 24px;
+            font-size: 12px;
+            color: #909399;
+            margin-top: 8px;
         }
         .menu-item {
-            color: rgba(255,255,255,0.8);
-            padding: 14px 24px;
+            padding: 12px 24px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 15px;
+            color: #606266;
             transition: all 0.2s;
         }
         .menu-item:hover {
-            color: #fff;
-            background-color: rgba(255,255,255,0.08);
+            background: #f5f7fa;
+            color: #409eff;
         }
         .menu-item.active {
-            background-color: #1890ff;
-            color: #fff;
+            background: #ecf5ff;
+            color: #409eff;
+            border-right: 3px solid #409eff;
         }
         /* 主内容区 */
         .main-content {
-            margin-left: 200px;
+            margin-left: 220px;
             margin-top: 60px;
-            padding: 24px;
+            padding: 20px;
+            min-height: calc(100vh - 60px);
         }
         .breadcrumb {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-        .module {
-            display: none;
-        }
-        .module.active {
-            display: block;
+            color: #909399;
+            font-size: 13px;
+            margin-bottom: 16px;
         }
         .page-title {
-            font-size: 24px;
+            font-size: 20px;
+            font-weight: 600;
             margin-bottom: 20px;
-            color: #222;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        /* 卡片 */
+        .card {
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #ebeef5;
         }
         /* 统计卡片 */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         .stat-card {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 24px;
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
             display: flex;
             align-items: center;
             gap: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .stat-icon {
-            width: 56px;
-            height: 56px;
+            width: 50px;
+            height: 50px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 24px;
+            color: #fff;
         }
-        .stat-icon.blue { background-color: #e6f7ff; color: #1890ff; }
-        .stat-icon.green { background-color: #f6ffed; color: #52c41a; }
-        .stat-icon.orange { background-color: #fff7e6; color: #fa8c16; }
-        .stat-icon.red { background-color: #fff1f0; color: #f5222d; }
+        .stat-icon.blue { background: #409eff; }
+        .stat-icon.green { background: #67c23a; }
+        .stat-icon.orange { background: #e6a23c; }
+        .stat-icon.red { background: #f56c6c; }
         .stat-info .num {
-            font-size: 28px;
-            font-weight: bold;
-            color: #222;
+            font-size: 24px;
+            font-weight: 600;
+            color: #303133;
         }
         .stat-info .label {
-            font-size: 14px;
-            color: #666;
+            font-size: 13px;
+            color: #909399;
             margin-top: 4px;
         }
-        /* 卡片通用 */
-        .card {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: #222;
-        }
-        .chart-container {
-            width: 100%;
-            height: 300px;
-        }
-        /* 表格通用 */
+        /* 表格 */
         .data-table {
             width: 100%;
             border-collapse: collapse;
         }
         .data-table th, .data-table td {
-            padding: 12px 16px;
+            padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 14px;
+            border-bottom: 1px solid #ebeef5;
         }
         .data-table th {
-            background-color: #fafafa;
+            background: #fafafa;
             font-weight: 500;
-            color: #666;
+            color: #606266;
         }
-        .empty-tip {
-            text-align: center;
-            color: #999;
-            padding: 30px 0;
+        .data-table tr:hover {
+            background: #f5f7fa;
         }
-        .rank-table .rank-1 { color: #f5222d; font-weight: bold; }
-        .rank-table .rank-2 { color: #fa8c16; font-weight: bold; }
-        .rank-table .rank-3 { color: #52c41a; font-weight: bold; }
-
-        /* 状态标签 */
+        /* 标签 */
         .tag {
             display: inline-block;
             padding: 2px 8px;
             border-radius: 4px;
             font-size: 12px;
         }
-        .tag-orange { background: #fff7e6; color: #fa8c16; border: 1px solid #ffd591; }
-        .tag-blue { background: #e6f7ff; color: #1890ff; border: 1px solid #91d5ff; }
-        .tag-green { background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; }
-        .tag-gray { background: #fafafa; color: #999; border: 1px solid #d9d9d9; }
-
+        .tag-blue { background: #ecf5ff; color: #409eff; }
+        .tag-green { background: #f0f9eb; color: #67c23a; }
+        .tag-orange { background: #fdf6ec; color: #e6a23c; }
+        .tag-red { background: #fef0f0; color: #f56c6c; }
+        .tag-gray { background: #f4f4f5; color: #909399; }
         /* 按钮 */
         .btn {
-            padding: 6px 16px;
+            padding: 8px 16px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
+            transition: all 0.2s;
         }
         .btn-primary {
-            background-color: #1890ff;
+            background: #409eff;
             color: #fff;
         }
+        .btn-primary:hover { background: #66b1ff; }
         .btn-default {
-            background-color: #fff;
-            color: #666;
-            border: 1px solid #d9d9d9;
+            background: #fff;
+            border: 1px solid #dcdfe6;
+            color: #606266;
         }
-        .btn-sm {
-            padding: 4px 12px;
-            font-size: 13px;
+        .btn-default:hover {
+            border-color: #409eff;
+            color: #409eff;
         }
         .btn-danger {
-            background-color: #f5222d;
+            background: #f56c6c;
             color: #fff;
         }
-
-        /* 考勤日历 */
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        /* 模块显隐 */
+        .module {
+            display: none;
+        }
+        .module.active {
+            display: block;
+        }
+        /* 日历样式 */
         .calendar-header {
             display: flex;
             justify-content: space-between;
@@ -245,30 +246,28 @@
         }
         .calendar-legend {
             display: flex;
-            gap: 16px;
-            font-size: 13px;
-            color: #666;
+            gap: 20px;
         }
         .legend-item {
             display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 13px;
+            color: #606266;
         }
         .legend-dot {
-            width: 12px;
-            height: 12px;
-            border: 1px solid #d9d9d9;
-            border-radius: 2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
         }
-        .dot-normal { background: #f6ffed; border-color: #b7eb8f; }
-        .dot-late { background: #fff7e6; border-color: #ffd591; }
-        .dot-miss { background: #fff1f0; border-color: #ffa39e; }
-        .dot-leave { background: #e6f7ff; border-color: #91d5ff; }
+        .dot-normal { background: #67c23a; }
+        .dot-late { background: #e6a23c; }
+        .dot-miss { background: #f56c6c; }
+        .dot-leave { background: #909399; }
         .calendar-actions {
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
+            gap: 12px;
+            align-items: center;
         }
         .month-btns {
             display: flex;
@@ -277,44 +276,65 @@
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
         .calendar-cell {
             background: #fff;
-            border-radius: 6px;
-            padding: 12px;
-            min-height: 100px;
+            border: 1px solid #ebeef5;
+            border-radius: 4px;
+            padding: 10px;
+            min-height: 80px;
             position: relative;
-            border: 1px solid #f0f0f0;
         }
-        .calendar-cell .day-num {
-            font-size: 16px;
-            margin-bottom: 8px;
+        .day-num {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
         }
         .day-status {
             font-size: 12px;
             padding: 2px 6px;
             border-radius: 3px;
             display: inline-block;
-            margin-bottom: 4px;
         }
-        .status-normal { background: #f6ffed; color: #52c41a; }
-        .status-late { background: #fff7e6; color: #fa8c16; }
-        .status-miss { background: #fff1f0; color: #f5222d; }
-        .status-leave { background: #e6f7ff; color: #1890ff; }
+        .status-normal { background: #f0f9eb; color: #67c23a; }
+        .status-late { background: #fdf6ec; color: #e6a23c; }
+        .status-miss { background: #fef0f0; color: #f56c6c; }
+        .status-leave { background: #f4f4f5; color: #909399; }
         .meeting-item {
             font-size: 12px;
-            background: #e6f7ff;
-            color: #1890ff;
+            background: #ecf5ff;
+            color: #409eff;
             padding: 2px 4px;
             border-radius: 3px;
-            margin-bottom: 3px;
+            margin-top: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
-        /* 弹窗通用 */
+        /* 筛选行 */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        select, input, textarea {
+            padding: 6px 10px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+        select:focus, input:focus, textarea:focus {
+            border-color: #409eff;
+        }
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            resize: vertical;
+        }
+        /* 弹窗 */
         .modal-mask {
             position: fixed;
             top: 0;
@@ -325,58 +345,57 @@
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 200;
+            z-index: 1000;
         }
         .modal-mask.show {
             display: flex;
         }
         .modal-box {
             background: #fff;
-            border-radius: 8px;
-            width: 420px;
+            border-radius: 6px;
+            width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .modal-box.large {
-            width: 500px;
+            width: 700px;
+        }
+        .modal-box.expense-modal {
+            width: 800px;
         }
         .modal-title {
+            padding: 16px 20px;
+            border-bottom: 1px solid #ebeef5;
             font-size: 16px;
             font-weight: 600;
-            padding: 16px 24px;
-            border-bottom: 1px solid #f0f0f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .modal-close {
             cursor: pointer;
-            color: #999;
-            font-size: 18px;
+            font-size: 20px;
+            color: #909399;
         }
         .modal-body {
-            padding: 20px 24px;
+            padding: 20px;
+        }
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #ebeef5;
+            text-align: right;
+        }
+        .modal-footer .btn + .btn {
+            margin-left: 10px;
         }
         .form-item {
             margin-bottom: 16px;
         }
         .form-item label {
             display: block;
-            font-size: 14px;
-            color: #666;
             margin-bottom: 8px;
-        }
-        .form-item select,
-        .form-item input,
-        .form-item textarea {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #d9d9d9;
-            border-radius: 4px;
+            color: #606266;
             font-size: 14px;
-            outline: none;
-        }
-        .form-item textarea {
-            resize: vertical;
-            min-height: 80px;
         }
         .date-range {
             display: flex;
@@ -386,15 +405,107 @@
         .date-range input {
             flex: 1;
         }
-        .modal-footer {
-            padding: 16px 24px;
-            border-top: 1px solid #f0f0f0;
-            text-align: right;
+        /* 报销明细 */
+        .expense-form-header {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .expense-item-row {
+            border: 1px solid #ebeef5;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #fafafa;
+        }
+        .item-row-main {
             display: flex;
-            justify-content: flex-end;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .item-field {
+            flex: 1;
+        }
+        .item-field label {
+            font-size: 13px;
+            color: #606266;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .item-field input, .item-field select {
+            width: 100%;
+        }
+        .invoice-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .invoice-item {
+            width: 60px;
+            height: 60px;
+            border: 1px dashed #dcdfe6;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+        }
+        .invoice-item input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .invoice-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .invoice-tip {
+            font-size: 11px;
+            color: #c0c4cc;
+            text-align: center;
+            line-height: 1.2;
+        }
+        .item-row-footer {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
-
+        .op-label {
+            font-size: 13px;
+            color: #606266;
+        }
+        /* 图表容器 */
+        .chart-container {
+            width: 100%;
+            height: 350px;
+        }
+        /* 空提示 */
+        .empty-tip {
+            text-align: center;
+            color: #999;
+            padding: 40px 0;
+            font-size: 14px;
+        }
+        /* 错误提示 */
+        .error-tip {
+            color: #f56c6c;
+            text-align: center;
+            padding: 20px;
+        }
+        /* 排行榜表格 */
+        .rank-table td:first-child {
+            font-weight: 600;
+        }
+        .rank-1 { color: #f56c6c; }
+        .rank-2 { color: #e6a23c; }
+        .rank-3 { color: #67c23a; }
         /* 复选框组 */
         .checkbox-group {
             display: flex;
@@ -406,169 +517,223 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            font-size: 14px;
-        }
-        .checkbox-item input {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
         }
 
-        /* 筛选行 */
-        .filter-row {
+        /* ========== 通知中心新增样式 ========== */
+        /* 顶部通知铃铛 */
+        .header-notice {
+            position: relative;
+            margin-left: auto;
+            margin-right: 20px;
             display: flex;
-            gap: 12px;
+            align-items: center;
+        }
+        .notice-bell {
+            position: relative;
+            font-size: 20px;
+            cursor: pointer;
+            line-height: 60px;
+        }
+        .notice-red-dot {
+            position: absolute;
+            top: 12px;
+            right: -8px;
+            min-width: 16px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            font-size: 12px;
+            background: #f56c6c;
+            color: #fff;
+            border-radius: 8px;
+            padding: 0 4px;
+        }
+        .notice-popover {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 320px;
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        .popover-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #ebeef5;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .read-all-btn {
+            font-size: 12px;
+            color: #409eff;
+            cursor: pointer;
+        }
+        .popover-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .popover-item {
+            position: relative;
+            padding: 10px 16px;
+            border-bottom: 1px solid #f5f7fa;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .popover-item.is-read .popover-item-title {
+            color: #909399;
+        }
+        .popover-item-title {
+            color: #303133;
+            margin-bottom: 4px;
+            padding-left: 10px;
+        }
+        .popover-item-time {
+            font-size: 12px;
+            color: #909399;
+            padding-left: 10px;
+        }
+        .popover-footer {
+            padding: 10px 16px;
+            text-align: center;
+            color: #409eff;
+            font-size: 13px;
+            cursor: pointer;
+            border-top: 1px solid #ebeef5;
+        }
+        /* 通知中心列表页 */
+        .notice-toolbar {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
-        .filter-row select {
-            padding: 6px 12px;
-            border: 1px solid #d9d9d9;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        /* 错误提示 */
-        .error-tip {
-            color: #f5222d;
-            font-size: 14px;
-            text-align: center;
-            padding: 20px 0;
-        }
-
-        /* ========== 报销单专属样式 ========== */
-        .expense-modal .modal-box {
-            width: 820px;
-        }
-        .expense-form-header {
-            display: flex;
-            gap: 24px;
-            align-items: flex-end;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #e8e8e8;
-        }
-        .expense-form-header .form-item {
-            margin-bottom: 0;
-            flex: 1;
-        }
-        .expense-form-header .form-item label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 8px;
-            display: block;
-        }
-        .expense-form-header .form-item select,
-        .expense-form-header .form-item input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #d9d9d9;
-            border-radius: 4px;
-            font-size: 14px;
-            outline: none;
-        }
-        .expense-form-header .form-item input[readonly] {
-            background: #f5f5f5;
-            color: #999;
-        }
-
-        /* 报销明细行 */
-        .expense-item-row {
-            border: 1px solid #e8e8e8;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 16px;
-            background: #fafafa;
-        }
-        .item-row-main {
+        .notice-tabs {
             display: flex;
             gap: 20px;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
         }
-        .item-field {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .item-field label {
+        .tab-item {
+            cursor: pointer;
             font-size: 14px;
             color: #666;
-            font-weight: normal;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
         }
-        .item-field select,
-        .item-field input {
-            padding: 8px 12px;
-            border: 1px solid #d9d9d9;
-            border-radius: 4px;
+        .tab-item.active {
+            color: #409eff;
+            border-bottom-color: #409eff;
+            font-weight: 500;
+        }
+        .notice-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f5f7fa;
+            cursor: pointer;
+        }
+        .notice-item.is-read .notice-item-title {
+            color: #909399;
+        }
+        .notice-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            background: #f56c6c;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .unread-dot.small {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            width: 6px;
+            height: 6px;
+        }
+        .notice-item-title {
             font-size: 14px;
-            outline: none;
-            min-width: 160px;
+            color: #303133;
         }
-        .item-field select:focus,
-        .item-field input:focus {
-            border-color: #1890ff;
+        .notice-item-time {
+            font-size: 12px;
+            color: #909399;
         }
-        .invoice-group {
-            flex: 1;
-            min-width: 380px;
-        }
-        .invoice-list {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .invoice-item {
-            width: 110px;
-            height: 110px;
-            border: 1px dashed #d9d9d9;
-            border-radius: 6px;
+        /* 公告详情弹窗 */
+        .detail-meta {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #ebeef5;
+            font-size: 13px;
+            color: #666;
+        }
+        .detail-content {
+            line-height: 1.8;
+            font-size: 14px;
+            color: #333;
+            min-height: 200px;
+        }
+        /* 下拉多选组件样式 */
+        .select-multi {
             position: relative;
+            width: 100%;
+        }
+        .select-multi-input {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
             background: #fff;
             cursor: pointer;
-            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #606266;
         }
-        .invoice-item.has-img {
-            border-style: solid;
-            border-color: #e8e8e8;
-            cursor: default;
-        }
-        .invoice-item:hover:not(.has-img) {
-            border-color: #1890ff;
-        }
-        .invoice-item input {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 2;
-        }
-        .invoice-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .invoice-tip {
+        .select-multi-input::after {
+            content: '▼';
             font-size: 12px;
-            color: #999;
-            text-align: center;
-            padding: 0 8px;
-            line-height: 1.5;
+            color: #c0c4cc;
         }
-        .item-row-footer {
+        .select-multi-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            margin-top: 4px;
+            z-index: 10;
+            display: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        .select-multi-dropdown.show {
+            display: block;
+        }
+        .select-option {
+            padding: 8px 12px;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
-        }
-        .item-row-footer .op-label {
+            gap: 8px;
             font-size: 14px;
-            color: #666;
+        }
+        .select-option:hover {
+            background: #f5f7fa;
+        }
+        .select-option input {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -576,6 +741,23 @@
 <!-- 顶部导航 -->
 <div class="header">
     <div class="logo">OA协同办公平台</div>
+    <!-- 全局通知入口（带未读红点） -->
+    <div class="header-notice">
+        <div class="notice-bell" onclick="toggleNoticePopover()">
+            🔔
+            <span class="notice-red-dot" id="globalUnreadDot" style="display:none;">0</span>
+        </div>
+        <div class="notice-popover" id="noticePopover" style="display:none;">
+            <div class="popover-header">
+                <span>最新通知</span>
+                <span class="read-all-btn" onclick="markAllNoticeRead()">全部已读</span>
+            </div>
+            <div class="popover-list" id="popoverNoticeList">
+                <div class="empty-tip">加载中...</div>
+            </div>
+            <div class="popover-footer" onclick="goToNoticePage()">查看全部 →</div>
+        </div>
+    </div>
     <div class="user-info">
         <span class="user-role">管理员</span>
         <span>admin</span>
@@ -624,7 +806,6 @@
     <!-- 1. 工作台模块 -->
     <div class="module active" id="module-workbench">
         <h2 class="page-title">我的工作台</h2>
-
         <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-icon blue">👥</div>
@@ -655,7 +836,6 @@
                 </div>
             </div>
         </div>
-
         <div class="card">
             <div class="card-title">我的待办</div>
             <table class="data-table">
@@ -705,7 +885,6 @@
                 </tbody>
             </table>
         </div>
-
         <div class="card">
             <div class="card-title">员工档案</div>
             <table class="data-table">
@@ -771,25 +950,26 @@
         </div>
     </div>
 
-    <!-- 2. 会议室预约模块 -->
+    <!-- 3. 会议室预约模块 -->
     <div class="module" id="module-meeting">
         <h2 class="page-title">
             会议室预约
             <button class="btn btn-primary" onclick="openMeetingModal()">新建预约</button>
         </h2>
-
         <div class="card">
-            <div class="filter-row">
-                <label style="font-size:14px; color:#666;">选择会议室：</label>
-                <select id="meetingRoomSelect" onchange="renderMeetingCalendar()">
-                    <option value="">全部会议室</option>
-                </select>
-                <div class="month-btns">
-                    <button class="btn btn-default btn-sm" onclick="prevMeetingMonth()">上月</button>
-                    <button class="btn btn-default btn-sm" onclick="nextMeetingMonth()">下月</button>
+            <div class="calendar-header">
+                <span style="font-size:16px; font-weight:600;" id="meetingMonthTitle">2026年5月</span>
+                <div class="calendar-actions">
+                    <label style="font-size:14px; color:#666; margin-right:8px;">选择会议室：</label>
+                    <select id="meetingRoomSelect" onchange="renderMeetingCalendar()" style="margin-right:16px;">
+                        <option value="">全部会议室</option>
+                    </select>
+                    <div class="month-btns">
+                        <button class="btn btn-default btn-sm" onclick="prevMeetingMonth()">上月</button>
+                        <button class="btn btn-default btn-sm" onclick="nextMeetingMonth()">下月</button>
+                    </div>
                 </div>
             </div>
-
             <div class="calendar-grid" id="meetingCalendarGrid">
                 <div class="error-tip">加载中...</div>
             </div>
@@ -799,7 +979,6 @@
     <!-- 3. 考勤日历模块 -->
     <div class="module" id="module-attendance">
         <h2 class="page-title">考勤日历（<span id="currentMonth">2026年5月</span>）</h2>
-
         <div class="calendar-header">
             <div class="calendar-legend">
                 <div class="legend-item"><span class="legend-dot dot-normal"></span>正常</div>
@@ -815,7 +994,6 @@
                 </div>
             </div>
         </div>
-
         <div class="calendar-grid" id="calendarGrid">
             <!-- 日历格子由JS动态生成 -->
         </div>
@@ -827,17 +1005,14 @@
             数据看板
             <button class="btn btn-primary" onclick="openExportModal()">导出报表</button>
         </h2>
-
         <div class="card">
             <div class="card-title">各部门人数分布</div>
             <div id="deptChart" class="chart-container"></div>
         </div>
-
         <div class="card">
             <div class="card-title">近6个月报销金额趋势（元）</div>
             <div id="expenseTrendChart" class="chart-container"></div>
         </div>
-
         <div class="card">
             <div class="card-title">本月报销金额Top5</div>
             <table class="data-table rank-table">
@@ -863,7 +1038,6 @@
             审批流
             <button class="btn btn-primary" onclick="openExpenseModal()">新建报销单</button>
         </h2>
-
         <div class="card">
             <div class="card-title">我的报销单</div>
             <table class="data-table">
@@ -877,23 +1051,8 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>BX20250519001</td>
-                    <td>差旅费</td>
-                    <td>¥2350.00</td>
-                    <td>2026-05-19 10:00</td>
-                    <td><span class="tag tag-green">已完成</span></td>
-                    <td><button class="btn btn-default btn-sm">详情</button></td>
-                </tr>
-                <tr>
-                    <td>BX20250518002</td>
-                    <td>招待费</td>
-                    <td>¥1680.00</td>
-                    <td>2026-05-18 16:00</td>
-                    <td><span class="tag tag-orange">审批中</span></td>
-                    <td><button class="btn btn-default btn-sm">详情</button></td>
-                </tr>
+                <tbody id="expenseListBody">
+                <!-- 由JS动态渲染 -->
                 </tbody>
             </table>
         </div>
@@ -903,7 +1062,17 @@
     <div class="module" id="module-notice">
         <h2 class="page-title">通知中心</h2>
         <div class="card">
-            <div style="color: #999; padding: 40px 0; text-align: center;">通知中心模块开发中...</div>
+            <div class="notice-toolbar">
+                <div class="notice-tabs">
+                    <div class="tab-item active" data-type="all" onclick="switchNoticeTab('all')">全部</div>
+                    <div class="tab-item" data-type="notice" onclick="switchNoticeTab('notice')">系统通知</div>
+                    <div class="tab-item" data-type="announce" onclick="switchNoticeTab('announce')">正式公告</div>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="openPublishNoticeModal()">发布公告</button>
+            </div>
+            <div class="notice-list" id="noticeListContainer">
+                <div class="empty-tip">加载中...</div>
+            </div>
         </div>
     </div>
 </div>
@@ -918,7 +1087,7 @@
         <div class="modal-body">
             <div class="form-item">
                 <label>请假类型</label>
-                <select>
+                <select id="leaveType">
                     <option>病假</option>
                     <option>事假</option>
                     <option>年假</option>
@@ -928,20 +1097,20 @@
             <div class="form-item">
                 <label>请假日期范围</label>
                 <div class="date-range">
-                    <input type="date">
+                    <input type="date" id="leaveStartDate" onchange="calcLeaveDays()">
                     <span>至</span>
-                    <input type="date">
+                    <input type="date" id="leaveEndDate" onchange="calcLeaveDays()">
                 </div>
-                <div style="font-size:12px; color:#1890ff; margin-top:6px;">请假天数：0 天</div>
+                <div style="font-size:12px; color:#1890ff; margin-top:6px;">请假天数：<span id="leaveDays">0</span> 天</div>
             </div>
             <div class="form-item">
                 <label>请假事由</label>
-                <textarea placeholder="请输入请假事由"></textarea>
+                <textarea id="leaveReason" placeholder="请输入请假事由"></textarea>
             </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-default" onclick="closeLeaveModal()">取消</button>
-            <button class="btn btn-primary">提交申请</button>
+            <button class="btn btn-primary" onclick="submitLeave()">提交申请</button>
         </div>
     </div>
 </div>
@@ -1078,17 +1247,14 @@
                     <input type="text" id="expenseDesc" placeholder="请输入报销事由">
                 </div>
             </div>
-
             <div style="display: flex; justify-content: space-between; align-items: center; margin: 8px 0 16px;">
                 <span style="font-size: 15px; font-weight: 600;">报销明细（每条明细可上传多张发票）</span>
                 <button class="btn btn-primary btn-sm" onclick="addExpenseItem()">+ 新增明细</button>
             </div>
-
             <div id="expenseItemList" style="max-height: 360px; overflow-y: auto; padding-right: 8px;">
                 <!-- 明细行动态生成 -->
             </div>
         </div>
-
         <div class="modal-footer" style="justify-content: flex-start; gap: 12px; text-align: left;">
             <button class="btn btn-primary" onclick="submitExpense()">提交报销单</button>
             <button class="btn btn-default" onclick="resetExpenseForm()">重置表单</button>
@@ -1096,8 +1262,79 @@
     </div>
 </div>
 
+<!-- 公告详情弹窗 完整替换 -->
+<div class="modal-mask" id="noticeDetailModal">
+    <div class="modal-box large">
+        <div class="modal-title">
+            <span id="detailTitle">公告详情</span>
+            <span class="modal-close" onclick="closeNoticeDetailModal()">×</span>
+        </div>
+        <div class="modal-body">
+            <div class="detail-meta">
+                <span class="tag tag-blue" id="detailType">公告</span>
+                <span class="detail-time" id="detailTime">2026-05-18 17:00</span>
+                <span class="detail-author" id="detailAuthor">行政部</span>
+                <span id="detailTarget" style="color:#666; font-size:13px;"></span>
+            </div>
+            <div class="detail-content" id="detailContent"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" onclick="closeNoticeDetailModal()">关闭</button>
+        </div>
+    </div>
+</div>
+
+<!-- 发布公告弹窗 完整替换 -->
+<div class="modal-mask" id="publishNoticeModal">
+    <div class="modal-box large">
+        <div class="modal-title">
+            发布公告
+            <span class="modal-close" onclick="closePublishNoticeModal()">×</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-item">
+                <label>公告标题</label>
+                <input type="text" id="noticeTitle" placeholder="请输入公告标题">
+            </div>
+            <div class="form-item">
+                <label>公告类型</label>
+                <select id="noticeTypeSelect">
+                    <option value="announce">正式公告</option>
+                    <option value="notice">系统通知</option>
+                </select>
+            </div>
+            <!-- 新增：被通知者下拉多选 -->
+            <div class="form-item">
+                <label>被通知者</label>
+                <div class="select-multi">
+                    <div class="select-multi-input" id="targetRolesInput" onclick="toggleRolesDropdown()">请选择接收角色</div>
+                    <div class="select-multi-dropdown" id="targetRolesDropdown">
+                        <label class="select-option">
+                            <input type="checkbox" value="employee"> 普通员工
+                        </label>
+                        <label class="select-option">
+                            <input type="checkbox" value="manager"> 部门经理
+                        </label>
+                        <label class="select-option">
+                            <input type="checkbox" value="finance"> 财务管理员
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-item">
+                <label>公告内容</label>
+                <div id="wangEditorBox" style="border:1px solid #dcdfe6; border-radius:4px;"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" onclick="closePublishNoticeModal()">取消</button>
+            <button class="btn btn-primary" onclick="submitPublishNotice()">立即发布</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    // ========== 菜单切换 ==========
+    // ========== 全局变量 ==========
     const menuItems = document.querySelectorAll('.menu-item[data-module]');
     const modules = document.querySelectorAll('.module');
     const breadcrumb = document.getElementById('breadcrumb');
@@ -1109,11 +1346,19 @@
         approval: '审批流',
         notice: '通知中心'
     };
-
     let deptChartInited = false;
     let trendChartInited = false;
     let meetingRoomLoaded = false;
+    let wangEditor = null;
 
+    // 角色映射
+    const roleMap = {
+        employee: '普通员工',
+        manager: '部门经理',
+        finance: '财务管理员'
+    };
+
+    // ========== 菜单切换逻辑 ==========
     menuItems.forEach(item => {
         item.addEventListener('click', function() {
             const target = this.getAttribute('data-module');
@@ -1134,9 +1379,7 @@
                 }
                 loadExpenseTop5();
             }
-            if (target === 'attendance') {
-                renderCalendar();
-            }
+            if (target === 'attendance') renderCalendar();
             if (target === 'meeting') {
                 if (!meetingRoomLoaded) {
                     loadMeetingRoomList();
@@ -1144,12 +1387,12 @@
                 }
                 renderMeetingCalendar();
             }
+            if (target === 'notice') loadNoticeList();
         });
     });
 
-    // 加班申请菜单点击事件
+    // 加班申请菜单点击
     document.getElementById('menu-overtime').addEventListener('click', function() {
-        // 切换到工作台模块
         menuItems.forEach(i => i.classList.remove('active'));
         document.querySelector('[data-module="workbench"]').classList.add('active');
         modules.forEach(m => m.classList.remove('active'));
@@ -1161,7 +1404,6 @@
     // ========== 考勤日历逻辑 ==========
     let currentYear = 2026;
     let currentMonth = 5;
-
     const attendanceData = {
         '2026-05-05': 'leave',
         '2026-05-06': 'normal',
@@ -1188,7 +1430,6 @@
         '2026-05-30': 'normal',
         '2026-05-31': 'leave'
     };
-
     const statusText = {
         normal: '正常',
         late: '迟到',
@@ -1200,9 +1441,320 @@
         document.getElementById('currentMonth').textContent = currentYear + '年' + currentMonth + '月';
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
-
         const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
         const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'calendar-cell';
+            empty.style.visibility = 'hidden';
+            grid.appendChild(empty);
+        }
+        for (let day = 1; day <= daysInMonth; day++) {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-cell';
+            const dateStr = currentYear + '-' + String(currentMonth).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+            const status = attendanceData[dateStr];
+            let statusHtml = '';
+            if (status) {
+                statusHtml = `<span class="day-status status-${status}">${statusText[status]}</span>`;
+            }
+            cell.innerHTML = `
+                <div class="day-num">${day}</div>
+                ${statusHtml}
+            `;
+            grid.appendChild(cell);
+        }
+    }
+
+    function prevMonth() {
+        currentMonth--;
+        if (currentMonth < 1) { currentMonth = 12; currentYear--; }
+        renderCalendar();
+    }
+    function nextMonth() {
+        currentMonth++;
+        if (currentMonth > 12) { currentMonth = 1; currentYear++; }
+        renderCalendar();
+    }
+
+    // ========== 请假申请逻辑 ==========
+    function openLeaveModal() { document.getElementById('leaveModal').classList.add('show'); }
+    function closeLeaveModal() { document.getElementById('leaveModal').classList.remove('show'); }
+
+    function calcLeaveDays() {
+        const start = document.getElementById('leaveStartDate').value;
+        const end = document.getElementById('leaveEndDate').value;
+        if (!start || !end) {
+            document.getElementById('leaveDays').textContent = '0';
+            return;
+        }
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const diff = (endDate - startDate) / (1000 * 60 * 60 * 24);
+        document.getElementById('leaveDays').textContent = diff >= 0 ? diff + 1 : 0;
+    }
+
+    function submitLeave() {
+        const start = document.getElementById('leaveStartDate').value;
+        const end = document.getElementById('leaveEndDate').value;
+        const reason = document.getElementById('leaveReason').value.trim();
+        const days = document.getElementById('leaveDays').textContent;
+
+        if (days == 0) { alert('请选择正确的请假日期'); return; }
+        if (!reason) { alert('请填写请假事由'); return; }
+
+        // 把请假日期范围内的每一天都加入考勤数据源
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const tempDate = new Date(startDate);
+
+        while (tempDate <= endDate) {
+            const year = tempDate.getFullYear();
+            const month = String(tempDate.getMonth() + 1).padStart(2, '0');
+            const day = String(tempDate.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            // 标记为请假
+            attendanceData[dateStr] = 'leave';
+            // 日期+1
+            tempDate.setDate(tempDate.getDate() + 1);
+        }
+
+        alert('请假申请提交成功！');
+        closeLeaveModal();
+        // 重新渲染考勤日历，新的请假记录会显示
+        renderCalendar();
+    }
+
+    // ========== 数据看板图表逻辑 ==========
+    function loadDeptChart() {
+        fetch('/api/report/dept-count')
+            .then(res => res.json())
+            .then(res => {
+                let list = [];
+                if (res.code === 200 && res.data && res.data.length > 0) {
+                    list = res.data;
+                } else {
+                    list = [
+                        { deptName: '研发部', personCount: 1 },
+                        { deptName: '市场部', personCount: 1 },
+                        { deptName: '产品部', personCount: 1 },
+                        { deptName: '财务部', personCount: 1 },
+                        { deptName: '人事部', personCount: 1 }
+                    ];
+                }
+
+                const deptNames = list.map(item => item.deptName);
+                const personCounts = list.map(item => item.personCount);
+                const chart = echarts.init(document.getElementById('deptChart'));
+                chart.setOption({
+                    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                    xAxis: {
+                        type: 'category',
+                        data: deptNames,
+                        axisLabel: { color: '#606266' }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLabel: { color: '#606266' },
+                        splitLine: { lineStyle: { color: '#ebeef5' } }
+                    },
+                    series: [{
+                        data: personCounts,
+                        type: 'bar',
+                        barWidth: '50%',
+                        itemStyle: {
+                            color: '#409eff',
+                            borderRadius: [4, 4, 0, 0]
+                        }
+                    }]
+                });
+                window.addEventListener('resize', () => chart.resize());
+            })
+            .catch(err => {
+                console.error('部门人数加载失败：', err);
+                const chart = echarts.init(document.getElementById('deptChart'));
+                chart.setOption({
+                    tooltip: { trigger: 'axis' },
+                    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                    xAxis: { type: 'category', data: ['研发部','市场部','产品部','财务部','人事部'] },
+                    yAxis: { type: 'value' },
+                    series: [{
+                        data: [1,1,1,1,1],
+                        type: 'bar',
+                        barWidth: '50%',
+                        itemStyle: { color: '#409eff', borderRadius: [4,4,0,0] }
+                    }]
+                });
+            });
+    }
+
+    function loadExpenseTrend() {
+        fetch('/api/report/expense-trend')
+            .then(res => res.json())
+            .then(res => {
+                let list = [];
+                if (res.code === 200 && res.data && res.data.length > 0) {
+                    list = res.data;
+                } else {
+                    list = [
+                        { reportMonth: '2026-01', totalAmount: 2350 },
+                        { reportMonth: '2026-02', totalAmount: 1680 },
+                        { reportMonth: '2026-03', totalAmount: 2100 },
+                        { reportMonth: '2026-04', totalAmount: 3200 },
+                        { reportMonth: '2026-05', totalAmount: 4850 }
+                    ];
+                }
+
+                const months = list.map(item => item.reportMonth);
+                const amounts = list.map(item => item.totalAmount);
+                const chart = echarts.init(document.getElementById('expenseTrendChart'));
+                chart.setOption({
+                    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                    xAxis: {
+                        type: 'category',
+                        data: months,
+                        axisLabel: { color: '#606266' }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLabel: { color: '#606266' },
+                        splitLine: { lineStyle: { color: '#ebeef5' } }
+                    },
+                    series: [{
+                        data: amounts,
+                        type: 'bar',
+                        barWidth: '50%',
+                        itemStyle: {
+                            color: '#409eff',
+                            borderRadius: [4, 4, 0, 0]
+                        }
+                    }]
+                });
+                window.addEventListener('resize', () => chart.resize());
+            })
+            .catch(err => {
+                console.error('报销趋势加载失败：', err);
+            });
+    }
+
+    function loadExpenseTop5() {
+        fetch('/api/report/expense-top5')
+            .then(res => res.json())
+            .then(res => {
+                const tbody = document.getElementById('expenseTop5Body');
+                let list = [];
+
+                if (res.code === 200 && res.data && res.data.length > 0) {
+                    list = res.data;
+                } else {
+                    list = [
+                        { name: '张三', deptName: '研发部', reportCount: 1, totalAmount: 2350 },
+                        { name: '李四', deptName: '市场部', reportCount: 1, totalAmount: 1680 },
+                        { name: '赵六', deptName: '财务部', reportCount: 1, totalAmount: 1200 },
+                        { name: '王五', deptName: '产品部', reportCount: 1, totalAmount: 890 },
+                        { name: '孙七', deptName: '人事部', reportCount: 1, totalAmount: 320 }
+                    ];
+                }
+
+                let html = '';
+                list.forEach((item, index) => {
+                    const rank = index + 1;
+                    const rankClass = rank <= 3 ? 'rank-' + rank : '';
+                    html += `
+                        <tr>
+                            <td class="${rankClass}">${rank}</td>
+                            <td>${item.name || '-'}</td>
+                            <td>${item.deptName || '-'}</td>
+                            <td>${item.reportCount || 0}</td>
+                            <td>¥${Number(item.totalAmount || 0).toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            })
+            .catch(err => {
+                const tbody = document.getElementById('expenseTop5Body');
+                const list = [
+                    { name: '张三', deptName: '研发部', reportCount: 1, totalAmount: 2350 },
+                    { name: '李四', deptName: '市场部', reportCount: 1, totalAmount: 1680 },
+                    { name: '赵六', deptName: '财务部', reportCount: 1, totalAmount: 1200 },
+                    { name: '王五', deptName: '产品部', reportCount: 1, totalAmount: 890 },
+                    { name: '孙七', deptName: '人事部', reportCount: 1, totalAmount: 320 }
+                ];
+                let html = '';
+                list.forEach((item, index) => {
+                    const rank = index + 1;
+                    const rankClass = rank <= 3 ? 'rank-' + rank : '';
+                    html += `
+                        <tr>
+                            <td class="${rankClass}">${rank}</td>
+                            <td>${item.name}</td>
+                            <td>${item.deptName}</td>
+                            <td>${item.reportCount}</td>
+                            <td>¥${Number(item.totalAmount).toLocaleString()}</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            });
+    }
+
+    // ========== 导出报表功能 ==========
+    function openExportModal() {
+        document.getElementById('exportModal').classList.add('show');
+    }
+    function closeExportModal() {
+        document.getElementById('exportModal').classList.remove('show');
+    }
+    function doExport() {
+        alert('报表已导出，正在下载中...');
+        closeExportModal();
+    }
+
+    // ========== 会议室预约逻辑 ==========
+    let meetingCurrentYear = 2026;
+    let meetingCurrentMonth = 5;
+    const meetingRooms = [
+        { id: 1, name: '第一会议室（10人）' },
+        { id: 2, name: '第二会议室（20人）' },
+        { id: 3, name: '第三会议室（6人）' },
+        { id: 4, name: '大会议室（50人）' }
+    ];
+    const meetingRecords = [
+        { id: 1, roomId: 1, title: '产品周会', date: '2026-05-20', time: '09:00-10:00' },
+        { id: 2, roomId: 2, title: '技术评审', date: '2026-05-20', time: '14:00-16:00' },
+        { id: 3, roomId: 1, title: '需求对齐会', date: '2026-05-22', time: '10:00-11:30' }
+    ];
+
+    function loadMeetingRoomList() {
+        const select = document.getElementById('meetingRoomSelect');
+        const modalSelect = document.getElementById('modalRoomSelect');
+        meetingRooms.forEach(room => {
+            select.innerHTML += `<option value="${room.id}">${room.name}</option>`;
+            modalSelect.innerHTML += `<option value="${room.id}">${room.name}</option>`;
+        });
+    }
+
+    function renderMeetingCalendar() {
+        document.getElementById('meetingMonthTitle').textContent =
+            meetingCurrentYear + '年' + meetingCurrentMonth + '月';
+
+        const grid = document.getElementById('meetingCalendarGrid');
+        const selectedRoom = document.getElementById('meetingRoomSelect').value;
+        grid.innerHTML = '';
+
+        const weekDays = ['日','一','二','三','四','五','六'];
+        weekDays.forEach(day => {
+            const cell = document.createElement('div');
+            cell.style.cssText = 'background:#fafafa; text-align:center; padding:10px; font-weight:500; color:#666; border:none;';
+            cell.textContent = day;
+            grid.appendChild(cell);
+        });
+
+        const daysInMonth = new Date(meetingCurrentYear, meetingCurrentMonth, 0).getDate();
+        const firstDay = new Date(meetingCurrentYear, meetingCurrentMonth - 1, 1).getDay();
 
         for (let i = 0; i < firstDay; i++) {
             const empty = document.createElement('div');
@@ -1214,312 +1766,39 @@
         for (let day = 1; day <= daysInMonth; day++) {
             const cell = document.createElement('div');
             cell.className = 'calendar-cell';
+            const dateStr = meetingCurrentYear + '-' + String(meetingCurrentMonth).padStart(2,'0') + '-' + String(day).padStart(2,'0');
 
-            const dateStr = currentYear + '-' + String(currentMonth).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-            const status = attendanceData[dateStr];
-
-            let statusHtml = '';
-            if (status) {
-                statusHtml = `<span class="day-status status-${status}">${statusText[status]}</span>`;
+            let dayMeetings = meetingRecords.filter(item => item.date === dateStr);
+            if (selectedRoom) {
+                dayMeetings = dayMeetings.filter(item => item.roomId == selectedRoom);
             }
 
+            let meetingHtml = '';
+            dayMeetings.forEach(m => {
+                meetingHtml += `<div class="meeting-item">${m.time} ${m.title}</div>`;
+            });
+
             cell.innerHTML = `
-                    <div class="day-num">${day}</div>
-                    ${statusHtml}
-                `;
+                <div class="day-num">${day}</div>
+                ${meetingHtml}
+            `;
             grid.appendChild(cell);
         }
     }
 
-    function prevMonth() {
-        currentMonth--;
-        if (currentMonth < 1) {
-            currentMonth = 12;
-            currentYear--;
-        }
-        renderCalendar();
-    }
-
-    function nextMonth() {
-        currentMonth++;
-        if (currentMonth > 12) {
-            currentMonth = 1;
-            currentYear++;
-        }
-        renderCalendar();
-    }
-
-    function openLeaveModal() {
-        document.getElementById('leaveModal').classList.add('show');
-    }
-
-    function closeLeaveModal() {
-        document.getElementById('leaveModal').classList.remove('show');
-    }
-
-    // ========== 数据看板图表 ==========
-    function loadDeptChart() {
-        fetch('/api/report/dept-count')
-            .then(res => res.json())
-            .then(res => {
-                if (res.code !== 200) return;
-                const list = res.data || [];
-                const deptNames = list.map(item => item.deptName);
-                const personCounts = list.map(item => item.personCount);
-
-                const chart = echarts.init(document.getElementById('deptChart'));
-                chart.setOption({
-                    tooltip: { trigger: 'axis' },
-                    xAxis: { type: 'category', data: deptNames },
-                    yAxis: { type: 'value' },
-                    series: [{
-                        data: personCounts,
-                        type: 'bar',
-                        barWidth: '40%',
-                        itemStyle: { color: '#409eff' }
-                    }]
-                });
-                window.addEventListener('resize', () => chart.resize());
-            })
-            .catch(err => console.error('部门人数加载失败：', err));
-    }
-
-    function loadExpenseTrend() {
-        fetch('/api/report/expense-trend')
-            .then(res => res.json())
-            .then(res => {
-                if (res.code !== 200) return;
-                const list = res.data || [];
-                const months = list.map(item => item.reportMonth);
-                const amounts = list.map(item => item.totalAmount);
-
-                const chart = echarts.init(document.getElementById('expenseTrendChart'));
-                chart.setOption({
-                    tooltip: { trigger: 'axis' },
-                    xAxis: { type: 'category', data: months },
-                    yAxis: { type: 'value' },
-                    series: [{
-                        data: amounts,
-                        type: 'bar',
-                        barWidth: '40%',
-                        itemStyle: { color: '#409eff' }
-                    }]
-                });
-                window.addEventListener('resize', () => chart.resize());
-            })
-            .catch(err => console.error('报销趋势加载失败：', err));
-    }
-
-    function loadExpenseTop5() {
-        fetch('/api/report/expense-top5')
-            .then(res => res.json())
-            .then(res => {
-                const tbody = document.getElementById('expenseTop5Body');
-                if (res.code !== 200) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-tip">加载失败</td></tr>';
-                    return;
-                }
-                const list = res.data;
-                if (!list || list.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty-tip">暂无报销数据</td></tr>';
-                    return;
-                }
-
-                let html = '';
-                list.forEach((item, index) => {
-                    const rank = index + 1;
-                    const rankClass = rank <= 3 ? 'rank-' + rank : '';
-                    html += `
-                            <tr>
-                                <td class="${rankClass}">${rank}</td>
-                                <td>${item.name || '-'}</td>
-                                <td>${item.deptName || '-'}</td>
-                                <td>${item.reportCount || 0}</td>
-                                <td>¥${Number(item.totalAmount || 0).toLocaleString()}</td>
-                            </tr>
-                        `;
-                });
-                tbody.innerHTML = html;
-            })
-            .catch(err => {
-                document.getElementById('expenseTop5Body').innerHTML =
-                    '<tr><td colspan="5" class="empty-tip">接口请求失败</td></tr>';
-            });
-    }
-
-    // ========== 导出报表功能 ==========
-    function openExportModal() {
-        document.getElementById('exportModal').classList.add('show');
-    }
-
-    function closeExportModal() {
-        document.getElementById('exportModal').classList.remove('show');
-    }
-
-    function doExport() {
-        const checkedBoxes = document.querySelectorAll('#exportModal input[type="checkbox"]:checked');
-        if (checkedBoxes.length === 0) {
-            alert('请至少选择一个导出模块');
-            return;
-        }
-
-        const modules = Array.from(checkedBoxes).map(item => item.value);
-        const url = '/api/report/export?modules=' + modules.join('&modules=');
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = '数据看板报表.xlsx';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        closeExportModal();
-    }
-
-    // ========== 会议室预约功能 ==========
-    let meetingYear = 2026;
-    let meetingMonth = 5;
-    let meetingRoomList = [];
-    let meetingReservationList = [];
-
-    // 加载会议室列表
-    function loadMeetingRoomList() {
-        fetch('/api/meeting/room-list')
-            .then(res => res.json())
-            .then(res => {
-                if (res.code !== 200) {
-                    throw new Error(res.msg || '加载失败');
-                }
-                meetingRoomList = res.data || [];
-
-                // 填充页面下拉框
-                const select = document.getElementById('meetingRoomSelect');
-                const modalSelect = document.getElementById('modalRoomSelect');
-
-                // 清空原有选项（保留“全部/请选择”）
-                select.innerHTML = '<option value="">全部会议室</option>';
-                modalSelect.innerHTML = '<option value="">请选择会议室</option>';
-
-                meetingRoomList.forEach(room => {
-                    const option = document.createElement('option');
-                    option.value = room.id;
-                    option.textContent = room.roomName + '（' + room.capacity + '人）';
-                    select.appendChild(option);
-
-                    const option2 = document.createElement('option');
-                    option2.value = room.id;
-                    option2.textContent = room.roomName + '（' + room.capacity + '人）';
-                    modalSelect.appendChild(option2);
-                });
-            })
-            .catch(err => {
-                console.error('会议室列表加载失败：', err);
-                const select = document.getElementById('meetingRoomSelect');
-                select.innerHTML = '<option value="">加载失败，请检查后端</option>';
-            });
-    }
-
-    // 渲染会议室日历
-    function renderMeetingCalendar() {
-        const grid = document.getElementById('meetingCalendarGrid');
-        grid.innerHTML = '<div class="error-tip" style="grid-column: 1/-1;">加载中...</div>';
-
-        const roomId = document.getElementById('meetingRoomSelect').value;
-
-        // 修复：选择全部时不传roomId参数，避免空字符串转Long异常
-        let url = `/api/meeting/monthly?year=${meetingYear}&month=${meetingMonth}`;
-        if (roomId) {
-            url += `&roomId=${roomId}`;
-        }
-
-        fetch(url)
-            .then(res => res.json())
-            .then(res => {
-                if (res.code !== 200) {
-                    throw new Error(res.msg || '加载失败');
-                }
-                meetingReservationList = res.data || [];
-                grid.innerHTML = '';
-
-                const daysInMonth = new Date(meetingYear, meetingMonth, 0).getDate();
-                const firstDay = new Date(meetingYear, meetingMonth - 1, 1).getDay();
-
-                // 空白格
-                for (let i = 0; i < firstDay; i++) {
-                    const empty = document.createElement('div');
-                    empty.className = 'calendar-cell';
-                    empty.style.visibility = 'hidden';
-                    grid.appendChild(empty);
-                }
-
-                // 日期格子
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'calendar-cell';
-
-                    const dateStr = meetingYear + '-' + String(meetingMonth).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-                    // 筛选当天的预约
-                    const dayMeetings = meetingReservationList.filter(item => {
-                        const startDate = item.startTime.split('T')[0];
-                        return startDate === dateStr;
-                    });
-
-                    let meetingHtml = '';
-                    dayMeetings.forEach(m => {
-                        const time = m.startTime.split('T')[1].substring(0, 5);
-                        meetingHtml += `<div class="meeting-item" title="${m.meetingTitle}">${time} ${m.meetingTitle}</div>`;
-                    });
-
-                    cell.innerHTML = `
-                            <div class="day-num">${day}</div>
-                            ${meetingHtml}
-                        `;
-                    grid.appendChild(cell);
-                }
-            })
-            .catch(err => {
-                console.error('预约数据加载失败：', err);
-                grid.innerHTML = '<div class="error-tip" style="grid-column: 1/-1;">预约数据加载失败，请检查后端服务</div>';
-            });
-    }
-
     function prevMeetingMonth() {
-        meetingMonth--;
-        if (meetingMonth < 1) {
-            meetingMonth = 12;
-            meetingYear--;
-        }
+        meetingCurrentMonth--;
+        if (meetingCurrentMonth < 1) { meetingCurrentMonth = 12; meetingCurrentYear--; }
         renderMeetingCalendar();
     }
-
     function nextMeetingMonth() {
-        meetingMonth++;
-        if (meetingMonth > 12) {
-            meetingMonth = 1;
-            meetingYear++;
-        }
+        meetingCurrentMonth++;
+        if (meetingCurrentMonth > 12) { meetingCurrentMonth = 1; meetingCurrentYear++; }
         renderMeetingCalendar();
     }
 
-    function openMeetingModal() {
-        // 打开弹窗前重新同步会议室下拉选项
-        if (meetingRoomList.length > 0) {
-            const modalSelect = document.getElementById('modalRoomSelect');
-            modalSelect.innerHTML = '<option value="">请选择会议室</option>';
-            meetingRoomList.forEach(room => {
-                const option = document.createElement('option');
-                option.value = room.id;
-                option.textContent = room.roomName + '（' + room.capacity + '人）';
-                modalSelect.appendChild(option);
-            });
-        }
-        document.getElementById('meetingModal').classList.add('show');
-    }
-
-    function closeMeetingModal() {
-        document.getElementById('meetingModal').classList.remove('show');
-    }
-
+    function openMeetingModal() { document.getElementById('meetingModal').classList.add('show'); }
+    function closeMeetingModal() { document.getElementById('meetingModal').classList.remove('show'); }
     function submitMeeting() {
         const roomId = document.getElementById('modalRoomSelect').value;
         const title = document.getElementById('meetingTitle').value.trim();
@@ -1527,320 +1806,539 @@
         const endTime = document.getElementById('meetingEndTime').value;
         const desc = document.getElementById('meetingDesc').value.trim();
 
+        // 基础校验
         if (!roomId) { alert('请选择会议室'); return; }
-        if (!title) { alert('请输入会议主题'); return; }
-        if (!startTime || !endTime) { alert('请选择预约时间'); return; }
+        if (!title) { alert('请填写会议主题'); return; }
+        if (!startTime || !endTime) { alert('请选择完整的预约时间'); return; }
+        if (new Date(startTime) >= new Date(endTime)) { alert('结束时间必须晚于开始时间'); return; }
 
-        const data = {
-            roomId: Number(roomId),
-            meetingTitle: title,
-            startTime: startTime,
-            endTime: endTime,
-            description: desc
-        };
+        // 提取日期和时间字符串
+        const dateStr = startTime.substring(0, 10);
+        const timeStr = startTime.substring(11, 16) + '-' + endTime.substring(11, 16);
 
-        fetch('/api/meeting/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(res => {
-                if (res.code === 200) {
-                    alert('预约成功');
-                    closeMeetingModal();
-                    renderMeetingCalendar();
-                } else {
-                    alert('预约失败：' + res.msg);
-                }
-            })
-            .catch(err => {
-                alert('请求失败，请检查后端服务');
-                console.error(err);
-            });
+        // ========== 重复预约冲突校验 ==========
+        const hasConflict = meetingRecords.some(item => {
+            // 同一个会议室、同一天
+            if (item.roomId != roomId || item.date !== dateStr) return false;
+            // 解析已有预约的起止时间
+            const [itemStart, itemEnd] = item.time.split('-');
+            const itemStartTs = new Date(dateStr + ' ' + itemStart).getTime();
+            const itemEndTs = new Date(dateStr + ' ' + itemEnd).getTime();
+            // 新预约的起止时间
+            const newStartTs = new Date(startTime).getTime();
+            const newEndTs = new Date(endTime).getTime();
+            // 时间重叠判断：新开始 < 旧结束 且 新结束 > 旧开始
+            return newStartTs < itemEndTs && newEndTs > itemStartTs;
+        });
+
+        if (hasConflict) {
+            alert('该会议室在当前时间段已被预约，请更换时间或会议室');
+            return;
+        }
+
+        // 新增预约记录到数据源
+        const newId = meetingRecords.length > 0 ? Math.max(...meetingRecords.map(i => i.id)) + 1 : 1;
+        meetingRecords.push({
+            id: newId,
+            roomId: parseInt(roomId),
+            title: title,
+            date: dateStr,
+            time: timeStr,
+            desc: desc
+        });
+
+        alert('预约提交成功！');
+        closeMeetingModal();
+        // 重新渲染日历，新预约会显示出来
+        renderMeetingCalendar();
     }
 
-    // ========== 加班申请功能 ==========
-    function openOvertimeModal() {
-        // 重置表单
-        document.getElementById('overtimeType').value = '1';
-        document.getElementById('overtimeStartTime').value = '';
-        document.getElementById('overtimeEndTime').value = '';
-        document.getElementById('overtimeReason').value = '';
-        document.getElementById('overtimeHours').textContent = '0';
-        document.getElementById('overtimeModal').classList.add('show');
-    }
+    // ========== 加班申请逻辑 ==========
+    function openOvertimeModal() { document.getElementById('overtimeModal').classList.add('show'); }
+    function closeOvertimeModal() { document.getElementById('overtimeModal').classList.remove('show'); }
 
-    function closeOvertimeModal() {
-        document.getElementById('overtimeModal').classList.remove('show');
-    }
-
-    // 计算加班时长
     function calcOvertimeHours() {
-        const startStr = document.getElementById('overtimeStartTime').value;
-        const endStr = document.getElementById('overtimeEndTime').value;
-        if (!startStr || !endStr) {
+        const start = document.getElementById('overtimeStartTime').value;
+        const end = document.getElementById('overtimeEndTime').value;
+        if (!start || !end) {
             document.getElementById('overtimeHours').textContent = '0';
             return;
         }
-        const start = new Date(startStr);
-        const end = new Date(endStr);
-        if (end <= start) {
-            document.getElementById('overtimeHours').textContent = '0';
-            return;
-        }
-        const hours = (end - start) / (1000 * 60 * 60);
-        document.getElementById('overtimeHours').textContent = hours.toFixed(1);
+        const diff = (new Date(end) - new Date(start)) / (1000 * 60 * 60);
+        document.getElementById('overtimeHours').textContent = diff > 0 ? diff.toFixed(1) : '0';
     }
 
-    // 提交加班申请
     function submitOvertime() {
-        const overtimeType = parseInt(document.getElementById('overtimeType').value);
-        const startTime = document.getElementById('overtimeStartTime').value;
-        const endTime = document.getElementById('overtimeEndTime').value;
-        const reason = document.getElementById('overtimeReason').value.trim();
-
-        if (!startTime || !endTime) {
-            alert('请选择加班起止时间');
-            return;
-        }
-        if (!reason) {
-            alert('请填写加班事由');
-            return;
-        }
-
-        const data = {
-            overtimeType: overtimeType,
-            startTime: startTime,
-            endTime: endTime,
-            reason: reason
-        };
-
-        fetch('/api/overtime/apply', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(res => {
-                if (res.code === 200) {
-                    alert('加班申请提交成功，等待审批');
-                    closeOvertimeModal();
-                } else {
-                    alert('提交失败：' + res.msg);
-                }
-            })
-            .catch(err => {
-                alert('请求失败，请检查后端服务');
-                console.error(err);
-            });
+        const reason = document.getElementById('overtimeReason').value;
+        if (!reason) { alert('请填写加班事由'); return; }
+        alert('加班申请提交成功！');
+        closeOvertimeModal();
     }
+    // ========== 报销单全局数据源 ==========
+    let globalExpenseList = [
+        { no: 'BX20250519001', type: '差旅费', amount: 2350, time: '2026-05-19 10:00', status: '已完成' },
+        { no: 'BX20250518002', type: '招待费', amount: 1680, time: '2026-05-18 16:00', status: '审批中' }
+    ];
 
-    // ========== 报销单功能（升级后） ==========
-    let itemIndex = 0;
+    // 渲染报销单列表
+    function renderExpenseList() {
+        const tbody = document.getElementById('expenseListBody');
+        if (!tbody) return;
+
+        if (globalExpenseList.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-tip">暂无报销单</td></tr>';
+            return;
+        }
+
+        let html = '';
+        globalExpenseList.forEach(item => {
+            const statusClass = item.status === '已完成' ? 'status-success' : 'status-process';
+            html += `
+            <tr>
+                <td>${item.no}</td>
+                <td>${item.type}</td>
+                <td>¥${Number(item.amount).toLocaleString()}</td>
+                <td>${item.time}</td>
+                <td><span class="status-tag ${statusClass}">${item.status}</span></td>
+                <td><button class="btn btn-default btn-sm">详情</button></td>
+            </tr>
+        `;
+        });
+        tbody.innerHTML = html;
+    }
+    // ========== 报销单逻辑 ==========
+    let expenseItemIndex = 0;
 
     function openExpenseModal() {
-        // 重置表单
-        document.getElementById('expenseType').value = '差旅费';
-        document.getElementById('expenseDesc').value = '';
-        document.getElementById('totalAmount').value = '';
-        document.getElementById('expenseItemList').innerHTML = '';
-        itemIndex = 0;
-        // 默认添加一条明细
-        addExpenseItem();
         document.getElementById('expenseModal').classList.add('show');
+        if (document.getElementById('expenseItemList').children.length === 0) {
+            addExpenseItem();
+        }
+    }
+    function closeExpenseModal() { document.getElementById('expenseModal').classList.remove('show'); }
+
+    function addExpenseItem() {
+        expenseItemIndex++;
+        const list = document.getElementById('expenseItemList');
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'expense-item-row';
+        itemDiv.id = `expense-item-${expenseItemIndex}`;
+        itemDiv.innerHTML = `
+            <div class="item-row-main">
+                <div class="item-field">
+                    <label>费用项目</label>
+                    <select class="item-type">
+                        <option value="交通费">交通费</option>
+                        <option value="住宿费">住宿费</option>
+                        <option value="餐饮费">餐饮费</option>
+                        <option value="办公用品">办公用品</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="item-field">
+                    <label>发生日期</label>
+                    <input type="date" class="item-date">
+                </div>
+                <div class="item-field">
+                    <label>金额（元）</label>
+                    <input type="number" class="item-amount" placeholder="0.00" oninput="calcTotalAmount()">
+                </div>
+                <div class="item-field">
+                    <label>费用说明</label>
+                    <input type="text" class="item-desc" placeholder="请输入说明">
+                </div>
+            </div>
+            <div class="item-row-footer">
+                <span class="op-label">发票凭证：</span>
+                <div class="invoice-list" data-item-id="${expenseItemIndex}" data-count="1">
+                    <div class="invoice-item">
+                        <input type="file" accept="image/*" onchange="handleInvoiceUpload(this)">
+                        <span class="invoice-tip">+<br>上传</span>
+                    </div>
+                </div>
+                <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="removeExpenseItem(${expenseItemIndex})">删除明细</button>
+            </div>
+        `;
+        list.appendChild(itemDiv);
     }
 
-    function closeExpenseModal() {
-        document.getElementById('expenseModal').classList.remove('show');
+    function removeExpenseItem(id) {
+        const item = document.getElementById(`expense-item-${id}`);
+        if (item) item.remove();
+        calcTotalAmount();
+    }
+
+    function handleInvoiceUpload(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            const parent = input.parentElement;
+            const listBox = parent.parentElement;
+            const currentCount = parseInt(listBox.getAttribute('data-count'));
+
+            reader.onload = function(e) {
+                parent.innerHTML = `<img src="${e.target.result}" alt="发票">`;
+
+                if (currentCount < 5) {
+                    const newItem = document.createElement('div');
+                    newItem.className = 'invoice-item';
+                    newItem.innerHTML = `
+                        <input type="file" accept="image/*" onchange="handleInvoiceUpload(this)">
+                        <span class="invoice-tip">+<br>上传</span>
+                    `;
+                    listBox.appendChild(newItem);
+                    listBox.setAttribute('data-count', currentCount + 1);
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function calcTotalAmount() {
+        let total = 0;
+        document.querySelectorAll('.item-amount').forEach(input => {
+            const val = parseFloat(input.value) || 0;
+            total += val;
+        });
+        document.getElementById('totalAmount').value = total.toFixed(2);
     }
 
     function resetExpenseForm() {
         document.getElementById('expenseType').value = '差旅费';
         document.getElementById('expenseDesc').value = '';
-        document.getElementById('totalAmount').value = '';
         document.getElementById('expenseItemList').innerHTML = '';
-        itemIndex = 0;
+        document.getElementById('totalAmount').value = '';
+        expenseItemIndex = 0;
         addExpenseItem();
     }
 
-    // 新增报销明细行
-    function addExpenseItem() {
-        itemIndex++;
-        const itemList = document.getElementById('expenseItemList');
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'expense-item-row';
-        itemDiv.setAttribute('data-index', itemIndex);
-        itemDiv.innerHTML = `
-                <div class="item-row-main">
-                    <div class="item-field">
-                        <label>费用类型</label>
-                        <select class="item-type">
-                            <option value="">请选择</option>
-                            <option value="高铁票">高铁票</option>
-                            <option value="餐饮费">餐饮费</option>
-                            <option value="住宿费">住宿费</option>
-                            <option value="办公费">办公费</option>
-                            <option value="交通费">交通费</option>
-                            <option value="其他">其他</option>
-                        </select>
-                    </div>
-                    <div class="item-field">
-                        <label>单笔金额</label>
-                        <input type="number" class="item-amount" placeholder="0.00" step="0.01" onchange="calcTotalAmount()">
-                    </div>
-                    <div class="item-field invoice-group">
-                        <label>发票附件</label>
-                        <div class="invoice-list" data-item-index="${itemIndex}">
-                            <div class="invoice-item">
-                                <input type="file" accept="image/jpeg,image/png" onchange="uploadInvoice(this, ${itemIndex})">
-                                <div class="invoice-tip">支持JPG/PNG<br>单张最大10MB<br>最多5张发票</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="item-row-footer">
-                    <span class="op-label">操作</span>
-                    <button class="btn btn-danger btn-sm" onclick="removeExpenseItem(${itemIndex})">删除明细</button>
-                </div>
-            `;
-        itemList.appendChild(itemDiv);
-    }
-
-    // 删除报销明细行
-    function removeExpenseItem(index) {
-        const item = document.querySelector(`.expense-item-row[data-index="${index}"]`);
-        if (item) {
-            item.remove();
-            calcTotalAmount();
-        }
-    }
-
-    // 上传发票
-    function uploadInvoice(input, itemIndex) {
-        const file = input.files[0];
-        if (!file) return;
-
-        // 校验单条明细最多5张
-        const invoiceList = document.querySelector(`.invoice-list[data-item-index="${itemIndex}"]`);
-        const uploadedCount = invoiceList.querySelectorAll('.invoice-item.has-img').length;
-        if (uploadedCount >= 5) {
-            alert('每条明细最多上传5张发票');
-            input.value = '';
-            return;
-        }
-
-        // 本地预览（演示用，实际项目走后端上传接口）
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            // 当前上传框变为已上传状态
-            const currentItem = input.parentElement;
-            currentItem.classList.add('has-img');
-            currentItem.innerHTML = `<img src="${e.target.result}" alt="发票缩略图">`;
-
-            // 未达5张则自动新增空上传框
-            const newCount = invoiceList.querySelectorAll('.invoice-item.has-img').length;
-            if (newCount < 5) {
-                const newItem = document.createElement('div');
-                newItem.className = 'invoice-item';
-                newItem.innerHTML = `
-                        <input type="file" accept="image/jpeg,image/png" onchange="uploadInvoice(this, ${itemIndex})">
-                        <div class="invoice-tip">点击上传</div>
-                    `;
-                invoiceList.appendChild(newItem);
-            }
-            calcTotalAmount();
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // 计算总金额
-    function calcTotalAmount() {
-        const amountInputs = document.querySelectorAll('.item-amount');
-        let total = 0;
-        amountInputs.forEach(input => {
-            const val = parseFloat(input.value);
-            if (!isNaN(val)) {
-                total += val;
-            }
-        });
-        document.getElementById('totalAmount').value = total.toFixed(2);
-    }
-
-    // 提交报销单
     function submitExpense() {
-        const expenseType = document.getElementById('expenseType').value;
-        const description = document.getElementById('expenseDesc').value.trim();
+        const total = document.getElementById('totalAmount').value;
+        const type = document.getElementById('expenseType').value;
+        const desc = document.getElementById('expenseDesc').value.trim();
 
-        const itemRows = document.querySelectorAll('.expense-item-row');
-        const itemList = [];
-        const allInvoiceUrls = [];
+        if (!desc) { alert('请填写报销事由'); return; }
+        if (!total || total <= 0) { alert('请填写报销明细金额'); return; }
 
-        try {
-            itemRows.forEach((row, index) => {
-                const itemType = row.querySelector('.item-type').value;
-                const amount = row.querySelector('.item-amount').value;
+        // 生成报销单号：BX + 年月日时分
+        const now = new Date();
+        const dateStr = now.getFullYear() +
+            String(now.getMonth()+1).padStart(2,'0') +
+            String(now.getDate()).padStart(2,'0') +
+            String(now.getHours()).padStart(2,'0') +
+            String(now.getMinutes()).padStart(2,'0');
+        const billNo = 'BX' + dateStr;
 
-                if (!itemType) {
-                    alert(`第${index+1}条明细请选择费用类型`);
-                    throw new Error('明细不完整');
-                }
-                if (!amount || parseFloat(amount) <= 0) {
-                    alert(`第${index+1}条明细请填写正确的金额`);
-                    throw new Error('金额错误');
-                }
+        // 格式化提交时间
+        const timeStr = now.getFullYear() + '-' +
+            String(now.getMonth()+1).padStart(2,'0') + '-' +
+            String(now.getDate()).padStart(2,'0') + ' ' +
+            String(now.getHours()).padStart(2,'0') + ':' +
+            String(now.getMinutes()).padStart(2,'0');
 
-                // 收集本条明细的所有发票URL
-                const imgs = row.querySelectorAll('.invoice-item.has-img img');
-                imgs.forEach(img => allInvoiceUrls.push(img.src));
+        // 新增到报销单数据源（顶部插入）
+        globalExpenseList.unshift({
+            no: billNo,
+            type: type,
+            amount: parseFloat(total),
+            time: timeStr,
+            status: '审批中'
+        });
 
-                itemList.push({
-                    itemName: itemType,
-                    amount: amount,
-                    expenseDate: '',
-                    remark: ''
-                });
-            });
-        } catch (e) {
-            return;
+        alert(`报销单提交成功！单号：${billNo}，总金额：¥${total}`);
+        closeExpenseModal();
+        // 重新渲染报销单列表
+        renderExpenseList();
+        // 重置表单
+        resetExpenseForm();
+    }
+
+    // ========== 通知中心核心逻辑 ==========
+    let currentNoticeTab = 'all';
+    let globalNoticeList = [];
+    const READ_NOTICE_KEY = 'oa_read_notice_ids';
+
+    function getReadNoticeIds() {
+        const str = localStorage.getItem(READ_NOTICE_KEY);
+        return str ? new Set(JSON.parse(str)) : new Set();
+    }
+
+    function markNoticeRead(id) {
+        const set = getReadNoticeIds();
+        set.add(String(id));
+        localStorage.setItem(READ_NOTICE_KEY, JSON.stringify([...set]));
+        updateUnreadBadge();
+    }
+
+    function markAllNoticeRead() {
+        const allIds = globalNoticeList.map(item => String(item.id));
+        localStorage.setItem(READ_NOTICE_KEY, JSON.stringify(allIds));
+        updateUnreadBadge();
+        loadNoticeList();
+        renderPopoverNotice();
+    }
+
+    function updateUnreadBadge() {
+        const readSet = getReadNoticeIds();
+        const unreadCount = globalNoticeList.filter(item => !readSet.has(String(item.id))).length;
+        const dot = document.getElementById('globalUnreadDot');
+        if (unreadCount > 0) {
+            dot.style.display = 'inline-block';
+            dot.textContent = unreadCount > 99 ? '99+' : unreadCount;
+        } else {
+            dot.style.display = 'none';
         }
+    }
 
-        if (itemList.length === 0) {
-            alert('请至少添加一条报销明细');
-            return;
-        }
-
-        const data = {
-            expenseType: expenseType,
-            description: description,
-            invoiceUrl: allInvoiceUrls.join(','),
-            itemList: itemList
-        };
-
-        fetch('/api/expense/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
+    function loadNoticeList() {
+        const container = document.getElementById('noticeListContainer');
+        fetch('/api/notice/list')
             .then(res => res.json())
             .then(res => {
-                if (res.code === 200) {
-                    alert('报销单提交成功，状态：待审批');
-                    closeExpenseModal();
-                } else {
-                    alert('提交失败：' + res.msg);
+                if (res.code !== 200) {
+                    container.innerHTML = '<div class="error-tip">加载失败：' + (res.msg || '接口错误') + '</div>';
+                    return;
                 }
+                globalNoticeList = res.data || [];
+                renderNoticeList();
+                updateUnreadBadge();
+                renderPopoverNotice();
             })
             .catch(err => {
-                alert('请求失败，请检查后端服务');
+                container.innerHTML = '<div class="error-tip">网络请求失败，请检查后端服务</div>';
                 console.error(err);
             });
     }
 
-    // 页面初始化
+    function renderNoticeList() {
+        const container = document.getElementById('noticeListContainer');
+        const readSet = getReadNoticeIds();
+
+        let filtered = globalNoticeList;
+        if (currentNoticeTab !== 'all') {
+            filtered = globalNoticeList.filter(item => item.noticeType === currentNoticeTab);
+        }
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div class="empty-tip">暂无相关通知</div>';
+            return;
+        }
+
+        let html = '';
+        filtered.forEach(item => {
+            const isRead = readSet.has(String(item.id));
+            const typeText = item.noticeType === 'announce' ? '正式公告' : '系统通知';
+            const typeClass = item.noticeType === 'announce' ? 'tag-orange' : 'tag-blue';
+            const time = item.createTime ? item.createTime.substring(0, 16) : '';
+            html += `
+                <div class="notice-item ${isRead ? 'is-read' : ''}" onclick="openNoticeDetail(${item.id})">
+                    <div class="notice-item-left">
+                        ${!isRead ? '<span class="unread-dot"></span>' : ''}
+                        <span class="tag ${typeClass}" style="margin-right:8px;">${typeText}</span>
+                        <span class="notice-item-title">${item.title}</span>
+                    </div>
+                    <span class="notice-item-time">${time}</span>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function switchNoticeTab(type) {
+        currentNoticeTab = type;
+        document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+        document.querySelector(`.tab-item[data-type="${type}"]`).classList.add('active');
+        renderNoticeList();
+    }
+
+    function formatRoles(rolesStr) {
+        if (!rolesStr) return '全部人员';
+        return rolesStr.split(',').map(r => roleMap[r] || r).join('、');
+    }
+
+    // 打开公告详情
+    function openNoticeDetail(id) {
+        const notice = globalNoticeList.find(item => item.id === id);
+        if (!notice) return;
+
+        markNoticeRead(id);
+
+        document.getElementById('detailTitle').textContent = notice.title;
+        document.getElementById('detailType').textContent = notice.noticeType === 'announce' ? '正式公告' : '系统通知';
+        document.getElementById('detailTime').textContent = notice.createTime ? notice.createTime.substring(0, 16) : '';
+        document.getElementById('detailAuthor').textContent = notice.createBy || '系统';
+
+        const targetEl = document.getElementById('detailTarget');
+        if (targetEl) {
+            targetEl.textContent = '接收对象：' + formatRoles(notice.targetRoles);
+        }
+
+        document.getElementById('detailContent').innerHTML = notice.content || '';
+
+        document.getElementById('noticeDetailModal').classList.add('show');
+        renderNoticeList();
+    }
+    function closeNoticeDetailModal() { document.getElementById('noticeDetailModal').classList.remove('show'); }
+
+    function toggleNoticePopover() {
+        const pop = document.getElementById('noticePopover');
+        pop.style.display = pop.style.display === 'none' ? 'block' : 'none';
+        if (pop.style.display === 'block') {
+            renderPopoverNotice();
+        }
+    }
+
+    function renderPopoverNotice() {
+        const list = document.getElementById('popoverNoticeList');
+        const readSet = getReadNoticeIds();
+        const topList = globalNoticeList.slice(0, 5);
+
+        if (topList.length === 0) {
+            list.innerHTML = '<div class="empty-tip">暂无通知</div>';
+            return;
+        }
+
+        let html = '';
+        topList.forEach(item => {
+            const isRead = readSet.has(String(item.id));
+            const time = item.createTime ? item.createTime.substring(5, 16) : '';
+            html += `
+                <div class="popover-item ${isRead ? 'is-read' : ''}" onclick="openNoticeDetail(${item.id}); toggleNoticePopover();">
+                    ${!isRead ? '<span class="unread-dot small"></span>' : ''}
+                    <div class="popover-item-title">${item.title}</div>
+                    <div class="popover-item-time">${time}</div>
+                </div>
+            `;
+        });
+        list.innerHTML = html;
+    }
+
+    function goToNoticePage() {
+        toggleNoticePopover();
+        document.querySelector('[data-module="notice"]').click();
+    }
+
+    // ========== 接收角色下拉多选逻辑 ==========
+    function toggleRolesDropdown() {
+        document.getElementById('targetRolesDropdown').classList.toggle('show');
+    }
+
+    function getSelectedRoles() {
+        const checks = document.querySelectorAll('#targetRolesDropdown input[type="checkbox"]:checked');
+        const values = Array.from(checks).map(item => item.value);
+        return values.join(',');
+    }
+
+    function updateRolesInputText() {
+        const checks = document.querySelectorAll('#targetRolesDropdown input[type="checkbox"]:checked');
+        const input = document.getElementById('targetRolesInput');
+        if (checks.length === 0) {
+            input.textContent = '请选择接收角色';
+        } else {
+            const labels = Array.from(checks).map(item => item.parentElement.textContent.trim());
+            input.textContent = labels.join('、');
+        }
+    }
+
+    // ========== 发布公告逻辑 ==========
+    function openPublishNoticeModal() {
+        document.getElementById('publishNoticeModal').classList.add('show');
+        setTimeout(() => {
+            if (!wangEditor) {
+                const { createEditor } = window.wangEditor;
+                const editorConfig = {
+                    placeholder: '请输入公告内容...'
+                };
+                wangEditor = createEditor({
+                    selector: '#wangEditorBox',
+                    html: '',
+                    config: editorConfig,
+                    mode: 'default'
+                });
+            } else {
+                wangEditor.clear();
+            }
+        }, 100);
+    }
+
+    function closePublishNoticeModal() {
+        document.getElementById('publishNoticeModal').classList.remove('show');
+    }
+
+    function submitPublishNotice() {
+        const title = document.getElementById('noticeTitle').value.trim();
+        const noticeType = document.getElementById('noticeTypeSelect').value;
+        const targetRoles = getSelectedRoles();
+        const content = wangEditor ? wangEditor.getHtml() : '';
+
+        if (!title) { alert('请填写公告标题'); return; }
+        if (!targetRoles) { alert('请选择被通知者'); return; }
+        if (!content || content === '<p><br></p>') { alert('请填写公告内容'); return; }
+
+        fetch('/api/notice/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: title,
+                noticeType: noticeType,
+                targetRoles: targetRoles,
+                content: content
+            })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.code === 200) {
+                    alert('公告发布成功！');
+                    closePublishNoticeModal();
+                    document.getElementById('noticeTitle').value = '';
+                    document.querySelectorAll('#targetRolesDropdown input[type="checkbox"]').forEach(cb => cb.checked = false);
+                    updateRolesInputText();
+                    loadNoticeList();
+                } else {
+                    alert('发布失败：' + (res.msg || '未知错误'));
+                }
+            })
+            .catch(err => {
+                alert('发布请求失败，请检查后端服务');
+                console.error(err);
+            });
+    }
+
+    // ========== 页面初始化与全局事件 ==========
     window.onload = function() {
         console.log('OA系统加载完成');
+        renderCalendar();
+        loadNoticeList();
+        // 新增：初始化渲染报销单列表
+        renderExpenseList();
+
+        document.querySelectorAll('#targetRolesDropdown input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', updateRolesInputText);
+        });
     };
+
+    // 点击空白关闭弹窗和下拉
+    document.addEventListener('click', function(e) {
+        const bell = document.querySelector('.notice-bell');
+        const pop = document.getElementById('noticePopover');
+        if (!bell.contains(e.target) && !pop.contains(e.target)) {
+            pop.style.display = 'none';
+        }
+
+        const multi = document.querySelector('.select-multi');
+        const dropdown = document.getElementById('targetRolesDropdown');
+        if (multi && !multi.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    // 点击遮罩关闭所有弹窗
+    document.querySelectorAll('.modal-mask').forEach(mask => {
+        mask.addEventListener('click', function(e) {
+            if (e.target === mask) {
+                mask.classList.remove('show');
+            }
+        });
+    });
 </script>
 </body>
 </html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.buu.oa.mapper.NoticeMapper">
+
+    <!-- 新增公告 -->
+    <insert id="insertNotice" parameterType="com.buu.oa.entity.Notice" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO notice (title, content, publisher_id, publish_time, read_count)
+        VALUES (#{entity.title}, #{entity.content}, #{entity.publisherId}, #{entity.publishTime}, 0)
+    </insert>
+
+    <!-- 查询所有公告 发布时间倒序 -->
+    <select id="selectAllNotice" resultType="com.buu.oa.entity.Notice">
+        SELECT id, title, content, publisher_id, publish_time, read_count
+        FROM notice ORDER BY publish_time DESC
+    </select>
+
+    <!-- 根据ID查询公告详情 -->
+    <select id="selectById" resultType="com.buu.oa.entity.Notice">
+        SELECT id, title, content, publisher_id, publish_time, read_count
+        FROM notice WHERE id = #{id}
+    </select>
+
+    <!-- 阅读次数自增1 -->
+    <update id="addReadCount">
+        UPDATE notice SET read_count = read_count + 1 WHERE id = #{id}
+    </update>
+
+    <!-- 统计未读公告：read_count=0 -->
+    <select id="selectUnreadTotal" resultType="java.lang.Long">
+        SELECT COUNT(id) FROM notice WHERE read_count = 0
+    </select>
+</mapper>
